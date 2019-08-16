@@ -25,17 +25,24 @@ View(world)
 # adding variable refcount, all 0 by default
 # world$refcount <- NA   # for all NA 
 world$refcount <- 0
+class(world$refcount)
+world$refcount <- as.integer(world$refcount)
 View(world)
 
 # changing values in world$refcount
-world[1,"refcount"] <- 0
+# world[1,"refcount"] <- 0   # example: changing the country in the first row to 0
+world[15,"refcount"] <- 0    # 15 actually means the one before 15 in View() apparently
+world[16,"refcount"] <- 1    # Australia has 1 reference
+world[226,"refcount"] <- 0   # USA has 2 references
+world[227,"refcount"] <- 2
+
 View(world)
 
 # saving world to csv for physically printing out
 # NONE OF THIS WORKED
-
-write.csv(world,'world_df.csv')
-write.table(x=world,file="world_df.csv",row.names = T,col.names = T,sep = ",")
+# 
+# write.csv(world,'world_df.csv')
+# write.table(x=world,file="world_df.csv",row.names = T,col.names = T,sep = ",")
 
 # plotting basic map
 ggplot(data = world) +
@@ -47,5 +54,10 @@ ggplot(data = world) +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("World map", subtitle = paste0("(", length(unique(world$NAME)), " countries)"))
 
+# with fill according to 
+ggplot(data = world) +
+  geom_sf(aes(fill = refcount)) +
+  scale_fill_viridis_c(option = "plasma")
+
 # save the most recent map
-ggsave("map.pdf")
+ggsave("map.pdf",scale = 3)
