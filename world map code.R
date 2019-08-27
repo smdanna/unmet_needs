@@ -3,6 +3,7 @@
 
 install.packages(c("cowplot", "googleway", "ggplot2", "ggrepel",
                    "ggspatial", "libwgeom", "sf", "rnaturalearth", "rnaturalearthdata"))
+install.packages("sf")
                  
 library("ggplot2")
 theme_set(theme_bw())
@@ -10,9 +11,8 @@ library("sf")
 
 library("rnaturalearth")
 library("rnaturalearthdata")
-install.packages("rgeos")
+# install.packages("rgeos")
 library("rgeos")
-library("ggplot2")
 
 # saving map into object "world"
 world <- ne_countries(scale = "medium", returnclass = "sf")
@@ -26,8 +26,9 @@ View(world)
 # world$refcount <- NA   # for all NA 
 world$refcount <- 0
 class(world$refcount)
-world$refcount <- as.integer(world$refcount)
+world$refcount <- as.numeric(world$refcount)
 View(world)
+class(world$refcount)
 
 # changing values in world$refcount
 # world[1,"refcount"] <- 0   # example: changing the country in the first row to 0
@@ -54,10 +55,13 @@ ggplot(data = world) +
   xlab("Longitude") + ylab("Latitude") +
   ggtitle("World map", subtitle = paste0("(", length(unique(world$NAME)), " countries)"))
 
-# with fill according to 
+# with fill according to refcount
 ggplot(data = world) +
   geom_sf(aes(fill = refcount)) +
-  scale_fill_viridis_c(option = "plasma")
+  scale_fill_distiller(palette="GnBu") +
+  ggtitle("Provenance of included articles") + 
+  theme(panel.grid.major = element_line(color = gray(.9), linetype = "dotted", size = 0.5), panel.background = element_rect(fill = "aliceblue")) +
+  labs(fill="No. of articles")
 
 # save the most recent map
-ggsave("map.pdf",scale = 3)
+ggsave("scale175.pdf",scale = 1.75)
