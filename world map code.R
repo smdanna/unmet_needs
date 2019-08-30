@@ -65,3 +65,14 @@ ggplot(data = world) +
 
 # save the most recent map
 ggsave("scale175.pdf",scale = 1.75)
+
+# printing map as larger image for CAPE poster and Knowledge Sharing Day presentation, fixing the legend!
+ggplot(data = world) +
+  geom_sf(aes(fill = refcount)) +
+  scale_fill_distiller(palette="GnBu", breaks=c(0,1,2)) +
+  theme(panel.grid.major = element_line(color = gray(.9), linetype = "dotted", size = 0.5), panel.background = element_rect(fill = "aliceblue")) +
+  labs(fill="No. of articles") +
+  guides(fill=guide_colourbar(ticks = FALSE, barheight = 4))
+
+# save the most recent map
+ggsave("scale35.jpg",scale = 3.5)
